@@ -2,6 +2,15 @@
 # General Variables #
 #####################
 
+GNU_ECHO := $(shell gecho --version 2>/dev/null)
+
+ifdef GNU_ECHO
+	ECHO=gecho
+else
+	ECHO=echo
+endif
+
+
 SRC=actes.tmp.tex $(wildcard */*.tex)
 LATEX?=pdflatex
 LFLAGS?=-halt-on-error
@@ -73,7 +82,7 @@ clean:
 
 %.tgz: %.pdf %
 	@tar czf $@ $(@:.tgz=)/ $(@:.tgz=.pdf)
-	@echo "Created $@." >&2; \
+	@$(ECHO) "Created $@." >&2; \
 
 
 
@@ -142,61 +151,61 @@ actes.tmp.tex: _master.tex
 _articles.tex: $(SRC) Makefile
 	@for d in [^_]*/; do \
 		i=$$(basename "$$d"); \
-		check_i=$$(echo "$$i" | tr -cd "a-zA-Z0-9_+-"); \
+		check_i=$$($(ECHO) "$$i" | tr -cd "a-zA-Z0-9_+-"); \
 		if [ "$$i" = "$$check_i" ]; then \
-			echo "\inputarticle{$$i}"; \
+			$(ECHO) "\inputarticle{$$i}"; \
 		fi; \
 	done > $@
 
 Makefile.standalone-targets: $(SRC) Makefile
 	@for d in [^_]*/; do \
 		i=$$(basename "$$d"); \
-		check_i=$$(echo "$$i" | tr -cd "a-zA-Z0-9_+-"); \
+		check_i=$$($(ECHO) "$$i" | tr -cd "a-zA-Z0-9_+-"); \
 		if [ "$$i" = "$$check_i" ]; then \
-			echo "# Targets for $$i"; \
-			echo; \
-			echo "$$i.tmp.tex: _standalone.tex"; \
-			echo "	@sed 's/@@DIRECTORY@@/\$$(@:.tmp.tex=)/' _standalone.tex > \$$@"; \
-			echo; \
-			echo "$$i.ebook.tex: $$i.tmp.tex"; \
-			echo "	@sed 's/{sstic}/[ebook]{sstic}/' \$$< > \$$@"; \
-			echo; \
-			echo -n "$$i.tmp.pdf: $$i.tmp.tex $$(echo $$i/*.tex)"; \
-			ls $$i/*.bib > /dev/null 2> /dev/null && echo -n " $$(echo $$i/*.bib)"; \
-			ls $$i/img/*.jpg > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.jpg)"; \
-			ls $$i/img/*.png > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.png)"; \
-			ls $$i/img/*.eps > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.eps)"; \
-			ls $$i/img/*.pdf > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.pdf)"; \
-			echo; \
-			echo; \
-			echo -n "$$i.ebook.html: $$i.ebook.tex $$(echo $$i/*.tex)"; \
-			ls $$i/*.bib > /dev/null 2> /dev/null && echo -n " $$(echo $$i/*.bib)"; \
-			ls $$i/img/*.jpg > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.jpg)"; \
-			ls $$i/img/*.png > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.png)"; \
-			ls $$i/img/*.eps > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.eps)"; \
-			ls $$i/img/*.pdf > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.pdf)"; \
-			echo; \
-			echo; \
-			echo -n "actes.tmp.pdf: $$i.tmp.tex $$(echo $$i/*.tex)"; \
-			ls $$i/*.bib > /dev/null 2> /dev/null && echo -n " $$(echo $$i/*.bib)"; \
-			ls $$i/img/*.jpg > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.jpg)"; \
-			ls $$i/img/*.png > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.png)"; \
-			ls $$i/img/*.eps > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.eps)"; \
-			ls $$i/img/*.pdf > /dev/null 2> /dev/null && echo -n " $$(echo $$i/img/*.pdf)"; \
-			echo; \
-			echo; \
-			echo "$$i-clean:"; \
-			echo "	rm -f $$i.pdf $$i.azw3 $$i.epub $$i.mobi"; \
-			echo; \
-			echo "default: $$i.pdf"; \
-			echo "clean: $$i-clean"; \
-			echo "export: $$i.tgz"; \
-			echo "Created targets for $$i." >&2; \
-			echo; \
-			echo; \
-			echo; \
+			$(ECHO) "# Targets for $$i"; \
+			$(ECHO); \
+			$(ECHO) "$$i.tmp.tex: _standalone.tex"; \
+			$(ECHO) "	@sed 's/@@DIRECTORY@@/\$$(@:.tmp.tex=)/' _standalone.tex > \$$@"; \
+			$(ECHO); \
+			$(ECHO) "$$i.ebook.tex: $$i.tmp.tex"; \
+			$(ECHO) "	@sed 's/{sstic}/[ebook]{sstic}/' \$$< > \$$@"; \
+			$(ECHO); \
+			$(ECHO) -n "$$i.tmp.pdf: $$i.tmp.tex $$($(ECHO) $$i/*.tex)"; \
+			ls $$i/*.bib > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/*.bib)"; \
+			ls $$i/img/*.jpg > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.jpg)"; \
+			ls $$i/img/*.png > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.png)"; \
+			ls $$i/img/*.eps > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.eps)"; \
+			ls $$i/img/*.pdf > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.pdf)"; \
+			$(ECHO); \
+			$(ECHO); \
+			$(ECHO) -n "$$i.ebook.html: $$i.ebook.tex $$($(ECHO) $$i/*.tex)"; \
+			ls $$i/*.bib > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/*.bib)"; \
+			ls $$i/img/*.jpg > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.jpg)"; \
+			ls $$i/img/*.png > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.png)"; \
+			ls $$i/img/*.eps > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.eps)"; \
+			ls $$i/img/*.pdf > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.pdf)"; \
+			$(ECHO); \
+			$(ECHO); \
+			$(ECHO) -n "actes.tmp.pdf: $$i.tmp.tex $$($(ECHO) $$i/*.tex)"; \
+			ls $$i/*.bib > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/*.bib)"; \
+			ls $$i/img/*.jpg > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.jpg)"; \
+			ls $$i/img/*.png > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.png)"; \
+			ls $$i/img/*.eps > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.eps)"; \
+			ls $$i/img/*.pdf > /dev/null 2> /dev/null && $(ECHO) -n " $$($(ECHO) $$i/img/*.pdf)"; \
+			$(ECHO); \
+			$(ECHO); \
+			$(ECHO) "$$i-clean:"; \
+			$(ECHO) "	rm -f $$i.pdf $$i.azw3 $$i.epub $$i.mobi"; \
+			$(ECHO); \
+			$(ECHO) "default: $$i.pdf"; \
+			$(ECHO) "clean: $$i-clean"; \
+			$(ECHO) "export: $$i.tgz"; \
+			$(ECHO) "Created targets for $$i." >&2; \
+			$(ECHO); \
+			$(ECHO); \
+			$(ECHO); \
 else \
-			echo "Ignoring invalid dir name ($$i)." >&2; \
+			$(ECHO) "Ignoring invalid dir name ($$i)." >&2; \
 		fi \
 	done > Makefile.standalone-targets
 
